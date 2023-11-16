@@ -5,6 +5,8 @@ import 'package:newsapp/models/newsModel.dart';
 import 'package:newsapp/shared_prefs/bookmark_pref.dart';
 
 class BookMarkController extends GetxController {
+  BuildContext context;
+  BookMarkController({required this.context});
   List<Articles> bookmarkedArticles = [];
   updateBookmarkArticles(articles) {
     bookmarkedArticles = articles;
@@ -39,7 +41,7 @@ class BookMarkController extends GetxController {
     update();
   }
 
-  double containerPosition = (MediaQuery.of(Get.context!).size.width - 350) / 2;
+  double containerPosition = 0;
   int buttonIndex = 0;
   updatebuttonIndex(int index) {
     buttonIndex = index;
@@ -59,5 +61,6 @@ class BookMarkController extends GetxController {
     List<Articles> bookmarkedArticles =
         await SharedPreferencesHelper.getArticles();
     updateBookmarkArticles(bookmarkedArticles);
+    containerPosition = (MediaQuery.of(context).size.width - 350) / 2;
   }
 }

@@ -5,6 +5,7 @@ import 'package:newsapp/modules/bookmark_module/controller/bookmark_controller.d
 import 'package:newsapp/modules/headline_module/controller/home_controller.dart';
 import 'package:newsapp/modules/home_module/controller/home_controller.dart';
 import 'package:newsapp/modules/home_module/controller/navigation_controller.dart';
+import 'package:newsapp/modules/savedSources_module/controller/saved_sources_controller.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -12,8 +13,9 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(HomeController());
-    Get.put(BookMarkController());
+    Get.put(BookMarkController(context: context));
     Get.put(HeadlineController());
+    Get.put(SavedSourcesController());
     return GetBuilder<NavigationController>(
         init: NavigationController(),
         builder: (navigationController) {

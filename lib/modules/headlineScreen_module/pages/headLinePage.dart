@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:newsapp/modules/bookmark_module/controller/bookmark_controller.dart';
 import 'package:newsapp/modules/home_module/pages/components/newsCard.dart';
+import 'package:newsapp/modules/news_module/pages/newsPage.dart';
+import 'package:newsapp/modules/savedSources_module/controller/saved_sources_controller.dart';
 import 'package:newsapp/shared_prefs/headline_shared_pref.dart';
+import 'package:newsapp/shared_prefs/sourcesSharedPref.dart';
 import 'package:newsapp/ui_utils/app_text.dart';
 
 import '../../../models/headlineModel.dart';
@@ -89,6 +92,57 @@ class HeadlineScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(
+              height: 15,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15))),
+                    onPressed: () {
+                      launchSourceUrl(articles.url.toString());
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.link),
+                        AppText.appText(text: "View Story")
+                      ],
+                    )),
+                GetBuilder<SavedSourcesController>(
+                    builder: (savedSourcesController) {
+                  return ElevatedButton(
+                      onPressed: () async {
+                        checkifSourceSaved(articles.source!.name.toString())
+                            ? {
+                                savedSourcesController.removeSource(
+                                    articles.source!.name.toString()),
+                                await SourcesSharedPref.removeSource()
+                              }
+                            : {
+                                savedSourcesController.addSource(
+                                    articles.source!.name.toString()),
+                                await SourcesSharedPref.addSource()
+                              };
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15))),
+                      child: Row(
+                        children: [
+                          checkifSourceSaved(articles.source!.name.toString())
+                              ? const Icon(Icons.check)
+                              : const Icon(Icons.add),
+                          AppText.appText(text: "Save Source")
+                        ],
+                      ));
+                })
+              ],
+            ),
+            const SizedBox(
               height: 25,
             ),
             Column(
@@ -115,18 +169,20 @@ class HeadlineScreen extends StatelessWidget {
                   height: 10,
                 ),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AppText.appText(
-                        text: "Author: ",
-                        textStyle: const TextStyle(
+                    const Text("Author: ",
+                        style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16)),
                     const SizedBox(
                       width: 10,
                     ),
-                    AppText.appText(
-                        text: articles.author,
-                        textStyle: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 16)),
+                    Flexible(
+                      child: Text(articles.author.toString(),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                    ),
                   ],
                 )
               ],
@@ -141,5 +197,9 @@ class HeadlineScreen extends StatelessWidget {
     return Get.find<BookMarkController>()
         .bookmarkedHeadlines
         .contains(articles);
+  }
+
+  bool checkifSourceSaved(String source) {
+    return Get.find<SavedSourcesController>().savedSources.contains(source);
   }
 }

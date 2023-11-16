@@ -3,8 +3,11 @@ import 'package:get/get.dart';
 import 'package:newsapp/models/newsModel.dart';
 import 'package:newsapp/modules/bookmark_module/controller/bookmark_controller.dart';
 import 'package:newsapp/modules/home_module/pages/components/newsCard.dart';
+import 'package:newsapp/modules/savedSources_module/controller/saved_sources_controller.dart';
 import 'package:newsapp/shared_prefs/bookmark_pref.dart';
+import 'package:newsapp/shared_prefs/sourcesSharedPref.dart';
 import 'package:newsapp/ui_utils/app_text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsPage extends StatelessWidget {
   Articles articles;
@@ -87,6 +90,57 @@ class NewsPage extends StatelessWidget {
               ),
             ),
             const SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.purple,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15))),
+                    onPressed: () {
+                      launchSourceUrl(articles.url.toString());
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(Icons.link),
+                        AppText.appText(text: "View Story")
+                      ],
+                    )),
+                GetBuilder<SavedSourcesController>(
+                    builder: (savedSourcesController) {
+                  return ElevatedButton(
+                      onPressed: () async {
+                        checkifSourceSaved(articles.source!.name.toString())
+                            ? {
+                                savedSourcesController.removeSource(
+                                    articles.source!.name.toString()),
+                                await SourcesSharedPref.removeSource()
+                              }
+                            : {
+                                savedSourcesController.addSource(
+                                    articles.source!.name.toString()),
+                                await SourcesSharedPref.addSource()
+                              };
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.purple,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15))),
+                      child: Row(
+                        children: [
+                          checkifSourceSaved(articles.source!.name.toString())
+                              ? const Icon(Icons.check)
+                              : const Icon(Icons.add),
+                          AppText.appText(text: "Save Source")
+                        ],
+                      ));
+                })
+              ],
+            ),
+            const SizedBox(
               height: 25,
             ),
             Column(
@@ -138,4 +192,15 @@ class NewsPage extends StatelessWidget {
   bool checkifBookmarked(articles) {
     return Get.find<BookMarkController>().bookmarkedArticles.contains(articles);
   }
+
+  bool checkifSourceSaved(String source) {
+    return Get.find<SavedSourcesController>().savedSources.contains(source);
+  }
+
+  
 }
+Future<void> launchSourceUrl(url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw Exception('Could not launch $url');
+    }
+  }
