@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Internet Connection Example',
+      title: 'YourFeeds',
       home: InternetConnectionChecker(),
     );
   }

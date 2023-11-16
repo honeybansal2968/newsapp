@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:newsapp/models/headlineModel.dart' as headline;
 import 'package:newsapp/models/newsModel.dart';
 import 'package:newsapp/shared_prefs/bookmark_pref.dart';
+import 'package:newsapp/shared_prefs/headline_shared_pref.dart';
 
 class BookMarkController extends GetxController {
   BuildContext context;
@@ -61,6 +62,9 @@ class BookMarkController extends GetxController {
     List<Articles> bookmarkedArticles =
         await SharedPreferencesHelper.getArticles();
     updateBookmarkArticles(bookmarkedArticles);
+    List<headline.Articles> bookmarkedHeadlines =
+        await HeadlineSharedPref.getArticles();
+    updateBookmarkedHeadlines(bookmarkedHeadlines);
     containerPosition = (MediaQuery.of(context).size.width - 350) / 2;
   }
 }
