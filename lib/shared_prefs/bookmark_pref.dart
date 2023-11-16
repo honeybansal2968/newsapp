@@ -16,7 +16,6 @@ class SharedPreferencesHelper {
   static Future<List<Articles>> getArticles() async {
     final prefs = await SharedPreferences.getInstance();
     final String? encodedArticles = prefs.getString(keyArticles);
-    print(encodedArticles);
     if (encodedArticles != null) {
       final List<dynamic> decodedArticles = jsonDecode(encodedArticles);
       final List<Articles> articles =

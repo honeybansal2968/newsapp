@@ -189,18 +189,28 @@ class NewsPage extends StatelessWidget {
     );
   }
 
-  bool checkifBookmarked(articles) {
-    return Get.find<BookMarkController>().bookmarkedArticles.contains(articles);
+  bool checkifBookmarked(Articles articles) {
+    bool res = false;
+    for (var i = 0;
+        i < Get.find<BookMarkController>().bookmarkedArticles.length;
+        i++) {
+      if (Get.find<BookMarkController>().bookmarkedArticles[i].description == articles.description) {
+        res = true;
+        break;
+      }
+    }
+
+    print("here $res");
+    return res;
   }
 
   bool checkifSourceSaved(String source) {
     return Get.find<SavedSourcesController>().savedSources.contains(source);
   }
-
-  
 }
+
 Future<void> launchSourceUrl(url) async {
-    if (!await launchUrl(Uri.parse(url))) {
-      throw Exception('Could not launch $url');
-    }
+  if (!await launchUrl(Uri.parse(url))) {
+    throw Exception('Could not launch $url');
   }
+}

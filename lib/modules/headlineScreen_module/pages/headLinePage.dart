@@ -193,10 +193,17 @@ class HeadlineScreen extends StatelessWidget {
     );
   }
 
-  bool checkifBookmarked(articles) {
-    return Get.find<BookMarkController>()
-        .bookmarkedHeadlines
-        .contains(articles);
+  bool checkifBookmarked(Articles articles) {
+      bool res = false;
+    for (var i = 0;
+        i < Get.find<BookMarkController>().bookmarkedHeadlines.length;
+        i++) {
+      if (Get.find<BookMarkController>().bookmarkedHeadlines[i].description == articles.description) {
+        res = true;
+        break;
+      }
+    }
+    return res;
   }
 
   bool checkifSourceSaved(String source) {

@@ -59,12 +59,9 @@ class BookMarkController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    List<Articles> bookmarkedArticles =
-        await SharedPreferencesHelper.getArticles();
-    updateBookmarkArticles(bookmarkedArticles);
-    List<headline.Articles> bookmarkedHeadlines =
-        await HeadlineSharedPref.getArticles();
-    updateBookmarkedHeadlines(bookmarkedHeadlines);
+    bookmarkedArticles = await SharedPreferencesHelper.getArticles();
+    print(bookmarkedArticles.length);
+    bookmarkedHeadlines = await HeadlineSharedPref.getArticles();
     containerPosition = (MediaQuery.of(context).size.width - 350) / 2;
   }
 }
